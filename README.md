@@ -10,3 +10,4 @@ from and to are for the validity of a message. I am assuming this means after x 
 
 The meaning of "c" is unknown. It states code but its unclear what this means.
 
+Found all the relevant information. Took a while. Will have to rewrite the entire xml output most likely because it's bad.
