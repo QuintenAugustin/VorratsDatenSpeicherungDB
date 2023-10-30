@@ -12,10 +12,11 @@ conn = http.client.HTTPSConnection("apis.deutschebahn.com")
 headers = {
     'DB-Client-Id': constants.API_CLIENT_ID ,
     'DB-Api-Key': constants.API_KEY,
-    'accept': "application/xml"
+    'accept': "application/json"
     }
 
 #fetches info for specific train station
+#turn this into a loop going forward iterating through an array of eva numbers Quinten. That'd be smart would it not?
 conn.request("GET", "/db-api-marketplace/apis/timetables/v1/fchg/8000028", headers=headers)
 
 
