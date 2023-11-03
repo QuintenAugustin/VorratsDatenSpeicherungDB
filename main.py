@@ -17,7 +17,7 @@ headers = {
 
 #fetches info for specific train station
 #turn this into a loop going forward iterating through an array of eva numbers Quinten. That'd be smart would it not?
-conn.request("GET", "/db-api-marketplace/apis/timetables/v1/fchg/8000028", headers=headers)
+conn.request("GET", "/db-api-marketplace/apis/timetables/v1/rchg/8000105", headers=headers)
 
 
 res = conn.getresponse()

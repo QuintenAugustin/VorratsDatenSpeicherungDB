@@ -1,0 +1,23 @@
+<timetable station="Bayreuth Hbf" eva="8000028">
+
+<s id="8251521462443065156-2311010734-9" eva="8000028">
+    <m id="r2072939" t="h" from="2311010400" to="2311030100" cat="St�rung" ts="2310311909" ts-tts="23-10-31 23:16:10.960" pr="1"/>
+    <ar cpth="Kirchenlaibach|Seybothenreuth|Stockau" ct="2311010857" l="RB34"/>
+</s>
+
+
+<s id="4126756304783086132-2311010838-9" eva="8000028">
+    <m id="r2006063" t="h" from="2311010000" to="2312052359" cat="Bauarbeiten" ts="2307191847" ts-tts="23-10-31 23:16:10.457" pr="2"/>
+    <ar ct="2311010956" l="38">
+        <m id="r156969826" t="d" c="21" ts="2311010822" ts-tts="23-11-01 08:22:42.143"/>
+    </ar>
+</s>
+
+
+<s id="-5395440170717523703-2311010901-1" eva="8000028">
+    <m id="r2072939" t="h" from="2311010400" to="2311030100" cat="St�rung" ts="2310311909" ts-tts="23-10-31 23:16:10.960" pr="1"/>
+    <m id="r2055667" t="h" from="2310250000" to="2311012359" cat="Bauarbeiten" ts="2310271120" ts-tts="23-10-31 23:16:10.682" pr="2"/>
+    <dp cpth="Seybothenreuth|Kirchenlaibach" ct="2311010902" l="RB34"/>
+</s>
+
+</timetable>
