@@ -2,6 +2,7 @@ import pandas as pd
 import lxml.etree
 import pandas_read_xml as pdx
 import os
+import xml.etree.ElementTree as ET
 pd.set_option('display.max_columns', 30)
 pd.set_option('display.max_rows', 1)
 
@@ -34,6 +35,13 @@ xml = """
 #    str_current_datetime = str(current_datetime)
 #    file_name = str_current_datetime+".xml"
 #    timetableChangesFilePath = "rawdata/timetableChanges/"+ file_name
+
+data = ET.tostring(ET.parse('rawdata/timetableChanges/Output.xml').getroot()).decode("utf-8")
+f = open("preprocessedData/timetableChanges/Output.xml", "a+")
+#f.write("<new_root>")
+f.write(data)
+#f.write("</new_root")
+#f.close()
 
 df = pdx.read_xml(xml)
 df = pdx.fully_flatten(df)
