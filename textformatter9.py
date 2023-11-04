@@ -26,14 +26,6 @@ xml = """
     
 #)
 #df_out = df_out.drop(columns=["m", "ar", "test"])
-#data = []
-
-#dataFrameList = os.listdir("rawdata/timetableChanges/")
-
-#for r, d, f in os.walk(dataFrameList):
-#    for file in f:
-#        if ".xml" in file:
-#            data.append(file)
 
 df = pdx.read_xml(xml)
 df = pdx.fully_flatten(df)
