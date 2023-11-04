@@ -29,16 +29,11 @@ for i in l.relevantStations:
     res = conn.getresponse()
     data = res.read()
 
-    #Fetches date and time for proper file naming.
-    current_datetime = datetime.now().strftime("%Y%m%d-%H%M%S")
-
-    #converts datetime object to string and defines Filepath
-    str_current_datetime = str(current_datetime)
-    file_name = str_current_datetime+".xml"
-    timetableChangesFilePath = "rawdata/timetableChanges/"+ file_name
+    
+    timetableChangesFilePath = "rawdata/timetableChanges/Output.xml"
 
     #Writes timetable changes to file
-    with open(timetableChangesFilePath, 'w') as f:
+    with open(timetableChangesFilePath, 'a') as f:
         f.write(data.decode("utf-8"))
         f.close()
     print(station) 
