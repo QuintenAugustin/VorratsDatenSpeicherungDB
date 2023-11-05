@@ -2,6 +2,7 @@ import pandas as pd
 import lxml.etree
 import pandas_read_xml as pdx
 import os
+import xml.etree.ElementTree as ET
 pd.set_option('display.max_columns', 30)
 pd.set_option('display.max_rows', 1)
 
@@ -26,17 +27,25 @@ xml = """
     
 #)
 #df_out = df_out.drop(columns=["m", "ar", "test"])
-#data = []
 
-#dataFrameList = os.listdir("rawdata/timetableChanges/")
+##Fetches date and time for proper file naming.
+#    current_datetime = datetime.now().strftime("%Y%m%d-%H%M%S")
+#
+#    #converts datetime object to string and defines Filepath
+#    str_current_datetime = str(current_datetime)
+#    file_name = str_current_datetime+".xml"
+#    timetableChangesFilePath = "rawdata/timetableChanges/"+ file_name
 
-#for r, d, f in os.walk(dataFrameList):
-#    for file in f:
-#        if ".xml" in file:
-#            data.append(file)
+#data1 = ET.tostring(ET.parse('rawdata/timetableChanges/8000028.xml').getroot()).decode("utf-8")
+#data2 = ET.tostring(ET.parse('rawdata/timetableChanges/8000105.xml').getroot()).decode("utf-8")
+#f = open("preprocessedData/timetableChanges/Output.xml", "a+")
+#f.write("<new_root>")
+#f.write(data1)
+#f.write(data2)
+#f.write("</new_root>")
+#f.close()
 
-df = pdx.read_xml(xml)
+df = pdx.read_xml("preprocessedData/timetableChanges/Output.xml", [ 'new_root','timetable'], root_is_rows=False)
 df = pdx.fully_flatten(df)
 print(df)
 df.to_excel('output3.xlsx', index=False)
-#print(df_parsed)
