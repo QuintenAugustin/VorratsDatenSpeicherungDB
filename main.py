@@ -30,13 +30,14 @@ for i in l.relevantStations:
     data = res.read()
 
     #This does not work. I will have to revert to old format and merge xml files manually. Maybe with something like with every iteration through i z increases by 1 thus changing name?
-    timetableChangesFilePath = "rawdata/timetableChanges/Output.xml"
+    timetableChangesFilePath = f"rawdata/timetableChanges/{station}.xml"
 
     #Writes timetable changes to file
-    with open(timetableChangesFilePath, 'a') as f:
+    with open(timetableChangesFilePath, 'w', encoding="utf-8") as f:
+
         f.write(data.decode("utf-8"))
         f.close()
-    print(station) 
+    print(data.decode("utf-8")) 
     
 
 

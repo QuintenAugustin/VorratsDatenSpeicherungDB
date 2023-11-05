@@ -36,15 +36,16 @@ xml = """
 #    file_name = str_current_datetime+".xml"
 #    timetableChangesFilePath = "rawdata/timetableChanges/"+ file_name
 
-data = ET.tostring(ET.parse('rawdata/timetableChanges/Output.xml').getroot()).decode("utf-8")
-f = open("preprocessedData/timetableChanges/Output.xml", "a+")
+#data1 = ET.tostring(ET.parse('rawdata/timetableChanges/8000028.xml').getroot()).decode("utf-8")
+#data2 = ET.tostring(ET.parse('rawdata/timetableChanges/8000105.xml').getroot()).decode("utf-8")
+#f = open("preprocessedData/timetableChanges/Output.xml", "a+")
 #f.write("<new_root>")
-f.write(data)
-#f.write("</new_root")
+#f.write(data1)
+#f.write(data2)
+#f.write("</new_root>")
 #f.close()
 
-df = pdx.read_xml(xml)
+df = pdx.read_xml("preprocessedData/timetableChanges/Output.xml", [ 'new_root','timetable'], root_is_rows=False)
 df = pdx.fully_flatten(df)
 print(df)
 df.to_excel('output3.xlsx', index=False)
-#print(df_parsed)
