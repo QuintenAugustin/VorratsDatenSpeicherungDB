@@ -5,21 +5,21 @@ import xml.etree.ElementTree as ET
 #This is pretty roundabout. Adding everything initially into one massive file may doable. 
 #This should be tested. Deletion after being added to dataframe happens anyways.
 #YOU SHOULD TEST FOR CORRECTNESS!
-dataFrameList = os.getcwd("rawdata/timetableChanges/")
+#dataFrameList = os.getcwd("rawdata/timetableChanges/")
 
-data = []
+#data = []
 
-for r, d, f in os.walk(dataFrameList):
-    for file in f:
-        if ".xml" in file:
-            data.append(file)
+#for r, d, f in os.walk(dataFrameList):
+ #   for file in f:
+  #      if ".xml" in file:
+   #         data.append(file)
 
-preProcessedChangeData = "preprocessedData/timetableChanges/output.xml"
+#preProcessedChangeData = "preprocessedData/timetableChanges/output.xml"
 
 #Writes timetable changes to file
-with open(preProcessedChangeData, 'w') as f:
-    f.write(data)
-    f.close()
+#with open(preProcessedChangeData, 'w') as f:
+#    f.write(data)
+#    f.close()
 
 
     

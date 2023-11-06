@@ -36,16 +36,41 @@ xml = """
 #    file_name = str_current_datetime+".xml"
 #    timetableChangesFilePath = "rawdata/timetableChanges/"+ file_name
 
+#This is bad but its the easiest way to deal with the various xml files. 
 data1 = ET.tostring(ET.parse('rawdata/timetableChanges/8000028.xml').getroot()).decode("utf-8")
 data2 = ET.tostring(ET.parse('rawdata/timetableChanges/8000105.xml').getroot()).decode("utf-8")
 f = open("preprocessedData/timetableChanges/Output.xml", "a+")
+#This is here so that element tree parser doesnt complain about junk, gotta have proper xml structure sadly
 f.write("<new_root>")
 f.write(data1)
 f.write(data2)
 f.write("</new_root>")
 f.close()
-
+print('done')
 df = pdx.read_xml("preprocessedData/timetableChanges/Output.xml", [ 'new_root','timetable'], root_is_rows=False)
 df = pdx.fully_flatten(df)
+print(df)   
+#Renaming the automatically generated columns that represent file path to make them nice to read and sanity check.
+df.rename(columns={'@eva' : 'EvaNumber', 
+                   '@station' : 'station',
+                   's|@eva':'EvaNumberTrainTrip', 
+                   's|@id':'uniqueTrainTripId',
+                   's|ar|@cp':'ArrivalChangePlatform', 
+                   's|ar|@cpth':'ArrivalChangePath', 
+                   's|ar|@ct':'ArrivalChangeTime',
+                   's|ar|@l':'ArrivalLine',
+                   's|dp|@cp':'DepatureChangePlatform',
+                   's|dp|@cpth':'DepartureChangePath',
+                   's|dp|@ct':'DepartureChangeTime',
+                   's|dp|@l':'DepartureLine'
+                   },inplace=True)
 print(df)
 df.to_excel('output4.xlsx', index=False)
+#Disassembling dataframe for a relational database S
+df1=df[['EvaNumber', 'station']]
+#dropping duplicates in second step because otherwise it puts other columns in too.
+df1=df1.drop_duplicates()
+df2=df[['EvaNumberTrainTrip','uniqueTrainTripId','ArrivalChangePlatform','ArrivalChangePath','ArrivalChangeTime','ArrivalLine']]
+df2=df2.drop_duplicates()
+df1.to_excel('partialOutput4.xlsx', index=False)
+df2.to_excel('arrivalData.xlsx', index=False)

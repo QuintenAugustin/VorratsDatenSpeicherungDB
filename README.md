@@ -1,6 +1,6 @@
 # VorratsDatenSpeicherungDB
 
-**Knowledge thus far**
+**Knowledge thus far:**
 EVA number is the unique trainstation number. Trains have a unique identifier.
 
 Dataquality is horrible in this project for two reasons. 

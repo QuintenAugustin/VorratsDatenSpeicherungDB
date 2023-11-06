@@ -23,7 +23,7 @@ for i in l.relevantStations:
 
     #fetches info for specific train station
     #turn this into a loop going forward iterating through an array of eva numbers Quinten. That'd be smart would it not? Done
-    conn.request(f"GET", f"/db-api-marketplace/apis/timetables/v1/rchg/{station}", headers=headers)
+    conn.request(f"GET", f"/db-api-marketplace/apis/timetables/v1/fchg/{station}", headers=headers)
 
 
     res = conn.getresponse()
