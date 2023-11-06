@@ -11,28 +11,28 @@ for i in l.relevantStations:
     #Delay to ensure all api calls are accepted
     sleep(0.2)
 
-conn = http.client.HTTPSConnection("apis.deutschebahn.com")
+    conn = http.client.HTTPSConnection("apis.deutschebahn.com")
 
-headers = {
-    'DB-Client-Id':  constants.API_CLIENT_ID,
-    'DB-Api-Key': constants.API_KEY,
-    'accept': "application/xml"
-    }
+    headers = {
+        'DB-Client-Id':  constants.API_CLIENT_ID,
+        'DB-Api-Key': constants.API_KEY,
+        'accept': "application/xml"
+        }
 
-conn.request(f"GET", f"/db-api-marketplace/apis/timetables/v1/plan/{station}/231030/20", headers=headers)
+    conn.request(f"GET", f"/db-api-marketplace/apis/timetables/v1/plan/{station}/231106/17", headers=headers)
 
-res = conn.getresponse()
-data = res.read()
+    res = conn.getresponse()
+    data = res.read()
 
-#Fetches date and time for proper file naming.
-current_datetime = datetime.now().strftime("%Y%m%d-%H%M%S")
+    #Fetches date and time for proper file naming.
+    current_datetime = datetime.now().strftime("%Y%m%d-%H%M%S")
 
-#converts datetime object to string and defines Filepath
-str_current_datetime = str(current_datetime)
-file_name = str_current_datetime+".xml"
-timetableChangesFilePath = "rawdata/timetablePlanned/"+ file_name
+    #converts datetime object to string and defines Filepath
+    str_current_datetime = str(current_datetime)
+    file_name = str_current_datetime+".xml"
+    timetableChangesFilePath = f"rawdata/timetablePlanned/{station}.xml"
 
-#Writes timetable changes to file
-with open(timetableChangesFilePath, 'w', encoding="utf-8") as f:
-    f.write(data.decode("utf-8"))
-    f.close()
+    #Writes timetable changes to file
+    with open(timetableChangesFilePath, 'w', encoding="utf-8") as f:
+        f.write(data.decode("utf-8"))
+        f.close()
