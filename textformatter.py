@@ -80,6 +80,7 @@ df.rename(columns={'@eva' : 'EvaNumber',
                    's|dp|@tra':'DepartureTransition',          
                    },inplace=True)
 print('Base dataframe formatted')
+
 #Splitting the base dataframe up into several parts for being inserted into a relational database later on.
 #Might as well do it here and not tax the database with continuous junk later on. Also saves massively on local storage doing it this way.
 #To put things into perspective, the base dataframe saved into excel for just Frankfurt and Bayreuth was 12k rows. This is 3k.
@@ -88,16 +89,16 @@ DFStations=df[['EvaNumber', 'station']]
 DFStations=DFStations.drop_duplicates()
 print('Station dataframe extracted')
 
-DFArrival=df[['EvaNumberTrainTrip','uniqueTrainTripId','ArrivalChangePlatform','ArrivalChangePath','ArrivalChangeTime','ArrivalLine']]
+DFArrival=df[['EvaNumberTrainTrip','uniqueTrainTripId','ArrivalCancellationStatus','ArrivalCancellationTime','ArrivalDistantChange','ArrivalChangePlatform','ArrivalChangePath','ArrivalChangeTime','ArrivalLine']]
 DFArrival=DFArrival.drop_duplicates()
 print('Arrival dataframe extracted')
 
-DFDepartures=df[['EvaNumberTrainTrip','uniqueTrainTripId','DepartureChangePlatform','DepartureChangePath','DepartureChangeTime','DepartureLine']]
+DFDepartures=df[['EvaNumberTrainTrip','uniqueTrainTripId','DepartureCancellationStatus','DepartureCancellationTime','DepartureChangePlatform','DepartureChangePath','DepartureChangeTime','DepartureLine']]
 DFDepartures=DFDepartures.drop_duplicates()
 print('Departures dataframe extracted')
 
 #These are only here if you want to observe what output data might look like. Mostly for sanity checking.
-df.to_excel('output4.xlsx', index=False)
+#df.to_excel('output4.xlsx', index=False)
 DFStations.to_excel('stationData.xlsx', index=False)
 DFArrival.to_excel('arrivalData.xlsx', index=False)
 DFDepartures.to_excel('departureData.xlsx', index=False)
