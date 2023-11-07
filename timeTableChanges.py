@@ -12,8 +12,8 @@ for i in l.relevantStations:
     station = i
     #Delay to ensure all api calls are accepted
     sleep(0.2)
-    conn = http.client.HTTPSConnection("apis.deutschebahn.com")
 
+    conn = http.client.HTTPSConnection("apis.deutschebahn.com")
     #No looking at my keys. That'd be an amateur mistake
     headers = {
         'DB-Client-Id': constants.API_CLIENT_ID ,
@@ -34,7 +34,6 @@ for i in l.relevantStations:
 
     #Writes timetable changes to file
     with open(timetableChangesFilePath, 'w', encoding="utf-8") as f:
-
         f.write(data.decode("utf-8"))
         f.close()
     print(data.decode("utf-8")) 

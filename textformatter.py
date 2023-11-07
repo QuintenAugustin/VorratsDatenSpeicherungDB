@@ -6,9 +6,6 @@ import xml.etree.ElementTree as ET
 pd.set_option('display.max_columns', 30)
 pd.set_option('display.max_rows', 1)
 
-xml = """
-
-"""
 
 #df_out = pd.read_xml(xml, parser="lxml")
 
@@ -46,31 +43,62 @@ f.write(data1)
 f.write(data2)
 f.write("</new_root>")
 f.close()
-print('done')
+print('XMLs unioned, starting dataframe construction')
+
+#The unioned XML is completely flattened by this godsend of a package. Arriving at these two lines took 20hours.
+#There is a reason why this bloody file used to be called textformatter9.py in past commits......
 df = pdx.read_xml("preprocessedData/timetableChanges/Output.xml", [ 'new_root','timetable'], root_is_rows=False)
 df = pdx.fully_flatten(df)
-print(df)   
+print('Base dataframe constructed')   
 #Renaming the automatically generated columns that represent file path to make them nice to read and sanity check.
 df.rename(columns={'@eva' : 'EvaNumber', 
                    '@station' : 'station',
                    's|@eva':'EvaNumberTrainTrip', 
                    's|@id':'uniqueTrainTripId',
+                   's|ar|@clt':'ArrivalCancellationTime',
                    's|ar|@cp':'ArrivalChangePlatform', 
+                   's|ar|@cs':'ArrivalCancellationStatus',
                    's|ar|@cpth':'ArrivalChangePath', 
                    's|ar|@ct':'ArrivalChangeTime',
+                   's|ar|@dc':'ArrivalDistantChange', #Tf does this mean?
                    's|ar|@l':'ArrivalLine',
-                   's|dp|@cp':'DepatureChangePlatform',
+                   's|ar|@pp':'ArrivalPlannedPlatform',
+                   's|ar|@ppth':'ArrivalPlannedPlatform',
+                   's|ar|@ps':'ArrivalPlannedStatus', #This is also used if a cancellation has been revoked!
+                   's|ar|@pt':'ArrivalPlannedTime', #Probably won't use this one to avoid data doubling
+                   's|ar|@tra':'ArrivalTransition', #Train changes ID from one to another due to operating a different trip now. Annoying but makes sense.
+                   's|dp|@clt':'DepartureCancellationTime',
+                   's|dp|@cp':'DepartureChangePlatform',
                    's|dp|@cpth':'DepartureChangePath',
+                   's|dp|@cs':'DepartureCancellationStatus',
                    's|dp|@ct':'DepartureChangeTime',
-                   's|dp|@l':'DepartureLine'
+                   's|dp|@l':'DepartureLine',
+                   's|dp|@pp':'DeparturePlannedPlatform',
+                   's|dp|@ppth':'DeparturePlannedPath',
+                   's|dp|@ps':'DeparturePlannedStatus', #Same as with the last planned status.
+                   's|dp|@pt':'DeparturePlannedTime',
+                   's|dp|@tra':'DepartureTransition',          
                    },inplace=True)
-print(df)
-df.to_excel('output4.xlsx', index=False)
-#Disassembling dataframe for a relational database S
-df1=df[['EvaNumber', 'station']]
+print('Base dataframe formatted')
+#Splitting the base dataframe up into several parts for being inserted into a relational database later on.
+#Might as well do it here and not tax the database with continuous junk later on. Also saves massively on local storage doing it this way.
+#To put things into perspective, the base dataframe saved into excel for just Frankfurt and Bayreuth was 12k rows. This is 3k.
+DFStations=df[['EvaNumber', 'station']]
 #dropping duplicates in second step because otherwise it puts other columns in too.
-df1=df1.drop_duplicates()
-df2=df[['EvaNumberTrainTrip','uniqueTrainTripId','ArrivalChangePlatform','ArrivalChangePath','ArrivalChangeTime','ArrivalLine']]
-df2=df2.drop_duplicates()
-df1.to_excel('partialOutput4.xlsx', index=False)
-df2.to_excel('arrivalData.xlsx', index=False)
+DFStations=DFStations.drop_duplicates()
+print('Station dataframe extracted')
+
+DFArrival=df[['EvaNumberTrainTrip','uniqueTrainTripId','ArrivalChangePlatform','ArrivalChangePath','ArrivalChangeTime','ArrivalLine']]
+DFArrival=DFArrival.drop_duplicates()
+print('Arrival dataframe extracted')
+
+DFDepartures=df[['EvaNumberTrainTrip','uniqueTrainTripId','DepartureChangePlatform','DepartureChangePath','DepartureChangeTime','DepartureLine']]
+DFDepartures=DFDepartures.drop_duplicates()
+print('Departures dataframe extracted')
+
+#These are only here if you want to observe what output data might look like. Mostly for sanity checking.
+df.to_excel('output4.xlsx', index=False)
+DFStations.to_excel('stationData.xlsx', index=False)
+DFArrival.to_excel('arrivalData.xlsx', index=False)
+DFDepartures.to_excel('departureData.xlsx', index=False)
+
