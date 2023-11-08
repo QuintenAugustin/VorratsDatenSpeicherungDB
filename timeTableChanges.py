@@ -36,7 +36,7 @@ for i in l.relevantStations:
     with open(timetableChangesFilePath, 'w', encoding="utf-8") as f:
         f.write(data.decode("utf-8"))
         f.close()
-    print(data.decode("utf-8")) 
-    
+    print(f'Successfully obtained data for {station}') 
+print('You have assumed control over all information')    
 
 

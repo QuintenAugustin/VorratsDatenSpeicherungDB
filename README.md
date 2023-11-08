@@ -10,9 +10,9 @@ Dataquality is horrible in this project for two reasons.
 Solution for this: Fully flattening all output XML and loading it into a Pandas Dataframe. I sincerely thank all the random stackoverflow threads and especially the creator of the "pandas read xml" package. You saved me from having to write a parser which would have cost me an awful lot of time and caused me a lot of stress. 
 
 Next Steps:
-1. Do some basic tests to absolutely ensure that the dataframe has the right structure and then name the Columns properly so that humans can grasp tf is going on. (Also delete output.txt after dataframe creation. It's already annoying)
-2. Split the dataframe into several and store them in defined folders.
+1. Do some basic tests to absolutely ensure that the dataframe has the right structure and then name the Columns properly so that humans can grasp tf is going on. (Also delete output.txt after dataframe creation. It's already annoying) - Mostly done.
+2. Split the dataframe into several and store them in defined folders. - Done
 3. Import into SQL server (and figure out how to import at regular intervals)
 4. Do some fancy R stuff
 5. Figure out how on earth to get this all onto the internet.
-6. Find a way to not get broke due to server costs with this project. I swear this will be an issue.
+6. Find a way to not get broke due to server costs with this project. I swear this will be an issue. - Done, google gives 300 bucks.
