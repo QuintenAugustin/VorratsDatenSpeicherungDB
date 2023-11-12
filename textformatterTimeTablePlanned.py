@@ -91,4 +91,13 @@ print('Departures dataframe extracted')
 DFTrainInformation=df[['uniqueTrainTripId','TrainCategory','TrainNumber']]
 DFTrainInformation=DFTrainInformation.drop_duplicates()
 print('Train information dataframe extracted')
+
+DFPlannedTrainsMapping=df[['station','uniqueTrainTripId']]
+DFPlannedTrainsMapping=DFPlannedTrainsMapping.drop_duplicates()
+print('Train-Station mapping extracted')
 print('Great deeds have been done on this fine day. The data is ready for further assimilation. Even this horrible data quality bows before you. All hail pandas read xml.')
+df.to_excel('plannedBaseFrame.xlsx',index=False)
+DFPlannedArrivals.to_excel('plannedArrivals.xlsx',index=False)
+DFPlannedDepartures.to_excel('plannedDepartures.xlsx', index=False)
+DFTrainInformation.to_excel('plannedTrainInformation.xlsx',index=False)
+DFPlannedTrainsMapping.to_excel('plannedTrainMapping.xlsx',index=False)

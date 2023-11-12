@@ -93,8 +93,13 @@ DFChangedDepartures=df[['EvaNumberTrainTrip','uniqueTrainTripId','DepartureCance
 DFChangedDepartures=DFChangedDepartures.drop_duplicates()
 print('Departures dataframe extracted')
 
+DFChangedDataMapping=df[['EvaNumberTrainTrip','uniqueTrainTripId']]
+DFChangedDataMapping=DFChangedDataMapping.drop_duplicates()
+print('Change data Station-TripId mapping extracted')
+
 #These are only here if you want to observe what output data might look like. Mostly for sanity checking.
-#df.to_excel('output4.xlsx', index=False)
+df.to_excel('output4.xlsx', index=False)
 DFChangedArrivals.to_excel('arrivalData.xlsx', index=False)
 DFChangedDepartures.to_excel('departureData.xlsx', index=False)
+DFChangedDataMapping.to_excel('changedDataMapping.xlsx', index=False)
 
