@@ -4,7 +4,7 @@ import pandas_read_xml as pdx
 import os
 import xml.etree.ElementTree as ET
 pd.set_option('display.max_columns', 30)
-pd.set_option('display.max_rows', 1)
+pd.set_option('display.max_rows', 12)
 
 
 #df_out = pd.read_xml(xml, parser="lxml")
@@ -98,8 +98,8 @@ DFChangedDataMapping=DFChangedDataMapping.drop_duplicates()
 print('Change data Station-TripId mapping extracted')
 
 #These are only here if you want to observe what output data might look like. Mostly for sanity checking.
-df.to_excel('output4.xlsx', index=False)
-DFChangedArrivals.to_excel('arrivalData.xlsx', index=False)
-DFChangedDepartures.to_excel('departureData.xlsx', index=False)
-DFChangedDataMapping.to_excel('changedDataMapping.xlsx', index=False)
-
+#df.to_excel('output4.xlsx', index=False)
+#DFChangedArrivals.to_excel('arrivalData.xlsx', index=False)
+#DFChangedDepartures.to_excel('departureData.xlsx', index=False)
+#DFChangedDataMapping.to_excel('changedDataMapping.xlsx', index=False)
+print(DFChangedArrivals	)
