@@ -12,7 +12,8 @@ Solution for this: Fully flattening all output XML and loading it into a Pandas 
 Next Steps:
 1. Do some basic tests to absolutely ensure that the dataframe has the right structure and then name the Columns properly so that humans can grasp tf is going on. (Also delete output.txt after dataframe creation. It's already annoying) - Mostly done.
 2. Split the dataframe into several and store them in defined folders. - Done
-3. Import into SQL server (and figure out how to import at regular intervals) - This is proving to be harder than I expected because of course it is. At first I wanted to use merge. That wont do. I will be stealing from SO next I guess.
+3. Import into SQL server (and figure out how to import at regular intervals) - This is proving to be harder than I expected because of course it is. At first I wanted to use merge. That wont do. I will be stealing from SO next I guess. - The theft was successful. Lets goooo
+
 4. Do some fancy R stuff
 5. Figure out how on earth to get this all onto the internet.
-6. Find a way to not get broke due to server costs with this project. I swear this will be an issue. - Done, google gives 300 bucks.
+6. Find a way to not get broke due to server costs with this project. I swear this will be an issue. - Done, google gives 300 bucks. Update: Don't have to take this online, may do it anyways in order to flex.

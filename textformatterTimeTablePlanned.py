@@ -79,17 +79,25 @@ print('Base dataframe formatted, commencing extraction')
 #DFStations=DFStations.drop_duplicates()
 #print('Station dataframe extracted')
 
-DFPlannedArrivals=df[['uniqueTrainTripId','ArrivalLine','ArrivalPlannedPlatform','ArrivalPlannedPath','ArrivalPlannedTime','ArrivalTransition']]
+DFPlannedArrivals=df[['station','uniqueTrainTripId','ArrivalLine','ArrivalPlannedPlatform','ArrivalPlannedPath','ArrivalPlannedTime','ArrivalTransition']]
 #dropping duplicates in second step because otherwise it puts other columns in too.
 DFPlannedArrivals=DFPlannedArrivals.drop_duplicates()
+#These unique IDs serve as an identifier of THIS specific train trip at THIS specific station. API only provides unique identifiers for station
+#and train trip. By combining these two i can actually properly map stuff and properly call stuff. A unique trip ID shouldn't appear at the same station
+#twice unless DB suddenly started playing with the reverse (which would be surprising since their drivers are too busy striking to even consider the reverse.)
+#It will however appear at all stations for that train trip. Thus while unlikely to occur with my sample size, for the sake of clean data anything but this is unacceptable.
+#Doing it after dropping duplicates because performance. I may delete station and train trip id fields later on as this information now is repeated a lot. Not sure yet as I am not sure how the rest of this will go.
+DFPlannedArrivals['uniqueId'] = DFPlannedArrivals['station'].astype(str) + DFPlannedArrivals['uniqueTrainTripId'].astype(str)
 print('Arrivals dataframe extracted')
 
-DFPlannedDepartures=df[['uniqueTrainTripId','DepartureLine','DeparturePlannedPath','DeparturePlannedTime','DepartureTransition']]
+DFPlannedDepartures=df[['station','uniqueTrainTripId','DepartureLine','DeparturePlannedPath','DeparturePlannedTime','DepartureTransition']]
 DFPlannedDepartures=DFPlannedDepartures.drop_duplicates()
+DFPlannedDepartures['uniqueId'] = DFPlannedDepartures['station'].astype(str) + DFPlannedDepartures['uniqueTrainTripId'].astype(str)
 print('Departures dataframe extracted')
 
-DFTrainInformation=df[['uniqueTrainTripId','TrainCategory','TrainNumber']]
+DFTrainInformation=df[['station','uniqueTrainTripId','TrainCategory','TrainNumber']]
 DFTrainInformation=DFTrainInformation.drop_duplicates()
+DFTrainInformation['uniqueId'] = DFTrainInformation['station'].astype(str) + DFTrainInformation['uniqueTrainTripId'].astype(str)
 print('Train information dataframe extracted')
 
 DFPlannedTrainsMapping=df[['station','uniqueTrainTripId']]
@@ -100,5 +108,5 @@ print('Great deeds have been done on this fine day. The data is ready for furthe
 #df.to_excel('plannedBaseFrame.xlsx',index=False)
 #DFPlannedArrivals.to_excel('plannedArrivals.xlsx',index=False)
 #DFPlannedDepartures.to_excel('plannedDepartures.xlsx', index=False)
-#DFTrainInformation.to_excel('plannedTrainInformation.xlsx',index=False)
+DFTrainInformation.to_excel('plannedTrainInformation.xlsx',index=False)
 #DFPlannedTrainsMapping.to_excel('plannedTrainMapping.xlsx',index=False)
