@@ -13,6 +13,7 @@ Next Steps:
 1. Do some basic tests to absolutely ensure that the dataframe has the right structure and then name the Columns properly so that humans can grasp tf is going on. (Also delete output.txt after dataframe creation. It's already annoying) - Mostly done.
 2. Split the dataframe into several and store them in defined folders. - Done
 3. Import into SQL server (and figure out how to import at regular intervals) - This is proving to be harder than I expected because of course it is. At first I wanted to use merge. That wont do. I will be stealing from SO next I guess. - The theft was successful. Lets goooo
+Note to self: Currently in Change tables you have entries for arrival changes despite the changes only being in departures. Every entry is NULL but still.
 
 4. Do some fancy R stuff
 5. Figure out how on earth to get this all onto the internet.

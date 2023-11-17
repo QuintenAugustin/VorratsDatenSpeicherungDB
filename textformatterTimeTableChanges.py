@@ -52,31 +52,31 @@ df = pdx.fully_flatten(df)
 print('Base dataframe constructed')   
 #Renaming the automatically generated columns that represent file path to make them nice to read and sanity check.
 df.rename(columns={'@station' : 'station',
-                   's|@eva':'EvaNumberTrainTrip', 
+                   's|@eva':'EVANumberTrainTrip', 
                    's|@id':'uniqueTrainTripId',
-                   's|ar|@clt':'ArrivalCancellationTime',
-                   's|ar|@cp':'ArrivalChangePlatform', 
-                   's|ar|@cs':'ArrivalCancellationStatus',
-                   's|ar|@cpth':'ArrivalChangePath', 
-                   's|ar|@ct':'ArrivalChangeTime',
-                   's|ar|@dc':'ArrivalDistantChange', #Tf does this mean?
-                   's|ar|@l':'ArrivalLine',
-                   's|ar|@pp':'ArrivalPlannedPlatform',
-                   's|ar|@ppth':'ArrivalPlannedPlatform',
-                   's|ar|@ps':'ArrivalPlannedStatus', #This is also used if a cancellation has been revoked!
-                   's|ar|@pt':'ArrivalPlannedTime', #Probably won't use this one to avoid data doubling
-                   's|ar|@tra':'ArrivalTransition', #Train changes ID from one to another due to operating a different trip now. Annoying but makes sense.
-                   's|dp|@clt':'DepartureCancellationTime',
-                   's|dp|@cp':'DepartureChangePlatform',
-                   's|dp|@cpth':'DepartureChangePath',
-                   's|dp|@cs':'DepartureCancellationStatus',
-                   's|dp|@ct':'DepartureChangeTime',
-                   's|dp|@l':'DepartureLine',
-                   's|dp|@pp':'DeparturePlannedPlatform',
-                   's|dp|@ppth':'DeparturePlannedPath',
-                   's|dp|@ps':'DeparturePlannedStatus', #Same as with the last planned status.
-                   's|dp|@pt':'DeparturePlannedTime',
-                   's|dp|@tra':'DepartureTransition',          
+                   's|ar|@clt':'arrivalCancellationTime',
+                   's|ar|@cp':'arrivalChangePlatform', 
+                   's|ar|@cs':'arrivalCancellationStatus',
+                   's|ar|@cpth':'arrivalChangePath', 
+                   's|ar|@ct':'arrivalChangeTime',
+                   's|ar|@dc':'arrivalDistantChange', #Tf does this mean?
+                   's|ar|@l':'arrivalChangesLine',
+                   's|ar|@pp':'arrivalChangesPlannedPlatform',
+                   's|ar|@ppth':'arrivalChangesPlannedPath',
+                   's|ar|@ps':'arrivalChangesPlannedStatus', #This is also used if a cancellation has been revoked!
+                   's|ar|@pt':'arrivalChangesPlannedTime', #Probably won't use this one to avoid data doubling. Edit: I am using this to see whether I can make even more fun of DB
+                   's|ar|@tra':'arrivalChangesTransition', #Train changes ID from one to another due to operating a different trip now. Annoying but makes sense.
+                   's|dp|@clt':'departureCancellationTime',
+                   's|dp|@cp':'departureChangePlatform',
+                   's|dp|@cpth':'departureChangePath',
+                   's|dp|@cs':'departureCancellationStatus',
+                   's|dp|@ct':'departureChangeTime',
+                   's|dp|@l':'departureChangesLine',
+                   's|dp|@pp':'departureChangesPlannedPlatform',
+                   's|dp|@ppth':'departureChangesPlannedPath',
+                   's|dp|@ps':'departureChangesPlannedStatus', #Same as with the last planned status.
+                   's|dp|@pt':'departureChangesPlannedTime',
+                   's|dp|@tra':'departureChangesTransition',          
                    },inplace=True)
 print('Base dataframe formatted')
 
@@ -85,21 +85,23 @@ print('Base dataframe formatted')
 #To put things into perspective, the base dataframe saved into excel for just Frankfurt and Bayreuth was 12k rows. This is 3k.
 
 
-DFChangedArrivals=df[['EvaNumberTrainTrip','uniqueTrainTripId','ArrivalCancellationStatus','ArrivalCancellationTime','ArrivalDistantChange','ArrivalChangePlatform','ArrivalChangePath','ArrivalChangeTime','ArrivalLine']]
+DFChangedArrivals=df[['EVANumberTrainTrip','uniqueTrainTripId','arrivalCancellationStatus','arrivalCancellationTime','arrivalChangesPlannedStatus','arrivalDistantChange','arrivalChangePlatform','arrivalChangeTime','arrivalChangesLine','arrivalChangesPlannedPlatform','arrivalChangesPlannedTime','arrivalChangesTransition']]
 DFChangedArrivals=DFChangedArrivals.drop_duplicates()
-print('Arrival dataframe extracted')
+DFChangedArrivals['uniqueId']=DFChangedArrivals['EVANumberTrainTrip'].astype(str) + DFChangedArrivals['uniqueTrainTripId'].astype(str) 
+print('Arrival changes dataframe extracted')
 
-DFChangedDepartures=df[['EvaNumberTrainTrip','uniqueTrainTripId','DepartureCancellationStatus','DepartureCancellationTime','DeparturePlannedStatus','DepartureChangePlatform','DepartureChangePath','DepartureChangeTime','DepartureLine']]
+DFChangedDepartures=df[['EVANumberTrainTrip','uniqueTrainTripId','departureCancellationStatus','departureCancellationTime','departureChangesPlannedStatus','departureChangePlatform','departureChangeTime','departureChangesLine','departureChangesPlannedPlatform','departureChangesPlannedTime','departureChangesTransition']]
 DFChangedDepartures=DFChangedDepartures.drop_duplicates()
-print('Departures dataframe extracted')
+DFChangedDepartures['uniqueId']=DFChangedDepartures['EVANumberTrainTrip'].astype(str) + DFChangedDepartures['uniqueTrainTripId'].astype(str)
+print('Departure changes dataframe extracted')
 
-DFChangedDataMapping=df[['EvaNumberTrainTrip','uniqueTrainTripId']]
+DFChangedDataMapping=df[['EVANumberTrainTrip','uniqueTrainTripId']]
 DFChangedDataMapping=DFChangedDataMapping.drop_duplicates()
 print('Change data Station-TripId mapping extracted')
 
 #These are only here if you want to observe what output data might look like. Mostly for sanity checking.
-#df.to_excel('output4.xlsx', index=False)
-#DFChangedArrivals.to_excel('arrivalData.xlsx', index=False)
-#DFChangedDepartures.to_excel('departureData.xlsx', index=False)
+df.to_excel('output4.xlsx', index=False)
+DFChangedArrivals.to_excel('arrivalData.xlsx', index=False)
+DFChangedDepartures.to_excel('departureData.xlsx', index=False)
 #DFChangedDataMapping.to_excel('changedDataMapping.xlsx', index=False)
 print(DFChangedArrivals	)
