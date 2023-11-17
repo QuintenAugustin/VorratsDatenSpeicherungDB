@@ -13,8 +13,6 @@ records = df.values.tolist()
 # Connect to SQL Server
 server = '(localdb)\\localBahnminingDB' 
 database = 'test' 
-username = 'User' 
-password = '' 
 cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';Trusted_Connection=yes;')
 cursor = cnxn.cursor()
 
