@@ -54,18 +54,18 @@ print('Base dataframe for planned timetables constructed')
 #Renaming the automatically generated columns that represent file path to make them nice to read and sanity check.
 df.rename(columns={'@station' : 'station',
                    's|@id':'uniqueTrainTripId',
-                   's|ar|@l':'ArrivalLine',
-                   's|ar|@pp':'ArrivalPlannedPlatform',
-                   's|ar|@ppth':'ArrivalPlannedPath',
-                   's|ar|@ps':'ArrivalPlannedStatus', #Not sure why this is here. Going to have to do some snooping.
-                   's|ar|@pt':'ArrivalPlannedTime', #Probably won't use this one to avoid data doubling
-                   's|ar|@tra':'ArrivalTransition', #Train changes ID from one to another due to operating a different trip now. Annoying but makes sense.
-                   's|dp|@l':'DepartureLine',
-                   's|dp|@pp':'DeparturePlannedPlatform',
+                   's|ar|@l':'arrivalPlannedLine',
+                   's|ar|@pp':'arrivalPlannedPlatform',
+                   's|ar|@ppth':'arrivalPlannedPath',
+                   's|ar|@ps':'arrivalPlannedStatus', #Not sure why this is here. Going to have to do some snooping.
+                   's|ar|@pt':'arrivalPlannedTime', #Probably won't use this one to avoid data doubling
+                   's|ar|@tra':'arrivalPlannedTransition', #Train changes ID from one to another due to operating a different trip now. Annoying but makes sense.
+                   's|dp|@l':'departurePlannedLine',
+                   's|dp|@pp':'departurePlannedPlatform',
                    's|dp|@ppth':'DeparturePlannedPath',
                    's|dp|@ps':'DeparturePlannedStatus', #Same as with the last planned status.
-                   's|dp|@pt':'DeparturePlannedTime',
-                   's|dp|@tra':'DepartureTransition',
+                   's|dp|@pt':'departurePlannedTime',
+                   's|dp|@tra':'departurePlannedTransition',
                    's|tl|@c':'TrainCategory',       
                    's|tl|@n':'TrainNumber',
                    },inplace=True)
@@ -79,9 +79,11 @@ print('Base dataframe formatted, commencing extraction')
 #DFStations=DFStations.drop_duplicates()
 #print('Station dataframe extracted')
 
-DFPlannedArrivals=df[['station','uniqueTrainTripId','ArrivalLine','ArrivalPlannedPlatform','ArrivalPlannedPath','ArrivalPlannedTime','ArrivalTransition']]
+DFPlannedArrivals=df[['station','uniqueTrainTripId','arrivalPlannedLine','arrivalPlannedPlatform','arrivalPlannedTime','arrivalPlannedTransition']]
+
 #dropping duplicates in second step because otherwise it puts other columns in too.
 DFPlannedArrivals=DFPlannedArrivals.drop_duplicates()
+
 #These unique IDs serve as an identifier of THIS specific train trip at THIS specific station. API only provides unique identifiers for station
 #and train trip. By combining these two i can actually properly map stuff and properly call stuff. A unique trip ID shouldn't appear at the same station
 #twice unless DB suddenly started playing with the reverse (which would be surprising since their drivers are too busy striking to even consider the reverse.)
@@ -90,7 +92,7 @@ DFPlannedArrivals=DFPlannedArrivals.drop_duplicates()
 DFPlannedArrivals['uniqueId'] = DFPlannedArrivals['station'].astype(str) + DFPlannedArrivals['uniqueTrainTripId'].astype(str)
 print('Arrivals dataframe extracted')
 
-DFPlannedDepartures=df[['station','uniqueTrainTripId','DepartureLine','DeparturePlannedPath','DeparturePlannedTime','DepartureTransition']]
+DFPlannedDepartures=df[['station','uniqueTrainTripId','departurePlannedLine', 'departurePlannedPlatform', 'departurePlannedTime', 'departurePlannedTransition']]
 DFPlannedDepartures=DFPlannedDepartures.drop_duplicates()
 DFPlannedDepartures['uniqueId'] = DFPlannedDepartures['station'].astype(str) + DFPlannedDepartures['uniqueTrainTripId'].astype(str)
 print('Departures dataframe extracted')
@@ -105,8 +107,10 @@ DFPlannedTrainsMapping=DFPlannedTrainsMapping.drop_duplicates()
 DFPlannedTrainsMapping['uniqueId'] = DFPlannedTrainsMapping['station'].astype(str) + DFPlannedTrainsMapping['uniqueTrainTripId'].astype(str)
 print('Train-Station mapping extracted')
 print('Great deeds have been done on this fine day. The data is ready for further assimilation. Even this horrible data quality bows before you. All hail pandas read xml.')
+
+
 #df.to_excel('plannedBaseFrame.xlsx',index=False)
-#DFPlannedArrivals.to_excel('plannedArrivals.xlsx',index=False)
-#DFPlannedDepartures.to_excel('plannedDepartures.xlsx', index=False)
-DFTrainInformation.to_excel('plannedTrainInformation.xlsx',index=False)
+DFPlannedArrivals.to_excel('plannedArrivals.xlsx',index=False)
+DFPlannedDepartures.to_excel('plannedDepartures.xlsx', index=False)
+#DFTrainInformation.to_excel('plannedTrainInformation.xlsx',index=False)
 #DFPlannedTrainsMapping.to_excel('plannedTrainMapping.xlsx',index=False)
