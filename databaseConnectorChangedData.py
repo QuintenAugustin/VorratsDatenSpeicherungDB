@@ -22,7 +22,6 @@ sql_insert = '''
     declare @arrivalCancellationStatus varchar(10) = ?    
     declare @arrivalCancellationTime bigint = ? 
     declare @arrivalChangesPlannedStatus varchar(10) = ?
-    declare @arrivalDistantChange varchar(100) = ?
     declare @arrivalChangePlatform varchar(50) = ?
     declare @arrivalChangeTime bigint = ?
     declare @arrivalChangesLine varchar(50) = ?
@@ -36,7 +35,6 @@ sql_insert = '''
         arrivalCancellationStatus = @arrivalCancellationStatus,
         arrivalCancellationTime = @arrivalCancellationTime,
         arrivalChangesPlannedStatus = @arrivalChangesPlannedStatus,
-        arrivalDistantChange = @arrivalDistantChange,
         arrivalChangePlatform = @arrivalChangePlatform,
         arrivalChangeTime = @arrivalChangeTime,
         arrivalChangesLine = @arrivalChangesLine,
@@ -47,8 +45,8 @@ sql_insert = '''
 
     IF @@ROWCOUNT = 0
         INSERT INTO [ChangedArrivals]
-            (uniqueId, EVANumberTrainTrip, uniqueTrainTripid, arrivalCancellationStatus, arrivalCancellationTime, arrivalChangesPlannedStatus, arrivalDistantChange, arrivalChangePlatform, arrivalChangeTime, arrivalChangesLine, arrivalChangesPlannedPlatform, arrivalChangesPlannedTime, arrivalChangesTransition)
-        VALUES (@uniqueId, @EVANumberTrainTrip, @uniqueTrainTripId, @arrivalCancellationStatus, @arrivalCancellationTime, @arrivalChangesPlannedStatus, @arrivalDistantChange, @arrivalChangePlatform, @arrivalChangeTime, @arrivalChangesLine, @arrivalChangesPlannedPlatform, @arrivalChangesPlannedTime, @arrivalChangesTransition)
+            (uniqueId, EVANumberTrainTrip, uniqueTrainTripid, arrivalCancellationStatus, arrivalCancellationTime, arrivalChangesPlannedStatus, arrivalChangePlatform, arrivalChangeTime, arrivalChangesLine, arrivalChangesPlannedPlatform, arrivalChangesPlannedTime, arrivalChangesTransition)
+        VALUES (@uniqueId, @EVANumberTrainTrip, @uniqueTrainTripId, @arrivalCancellationStatus, @arrivalCancellationTime, @arrivalChangesPlannedStatus, @arrivalChangePlatform, @arrivalChangeTime, @arrivalChangesLine, @arrivalChangesPlannedPlatform, @arrivalChangesPlannedTime, @arrivalChangesTransition)
 
 '''
 cursor.executemany(sql_insert, records)
@@ -95,3 +93,5 @@ cursor.executemany(sql_insert, records)
 print("Changed departures insertion executed")
 
 cnxn.commit()
+#deleting Output file contents to prepare it for next run
+open('preprocessedData/timetableChanges/Output.xml', 'w').close()

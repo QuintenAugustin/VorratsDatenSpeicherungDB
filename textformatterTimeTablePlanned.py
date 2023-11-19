@@ -36,20 +36,27 @@ pd.set_option('display.max_rows', 1)
 #This is bad but its the easiest way to deal with the various xml files. 
 data1 = ET.tostring(ET.parse('rawdata/timetablePlanned/8000028.xml').getroot()).decode("utf-8")
 data2 = ET.tostring(ET.parse('rawdata/timetablePlanned/8000105.xml').getroot()).decode("utf-8")
+data3 = ET.tostring(ET.parse('rawdata/timetablePlanned/8002549.xml').getroot()).decode("utf-8")
+data4 = ET.tostring(ET.parse('rawdata/timetablePlanned/8011160.xml').getroot()).decode("utf-8")
 f = open("preprocessedData/timetablePlanned/Output.xml", "a+")
 #This is here so that element tree parser doesnt complain about junk, gotta have proper xml structure sadly
 f.write("<new_root>")
 f.write(data1)
 f.write(data2)
+f.write(data3)
+f.write(data4)
 f.write("</new_root>")
 f.close()
 print('XMLs unioned, starting dataframe construction')
 
 #The unioned XML is completely flattened by this godsend of a package.
-df = pdx.read_xml("preprocessedData/timetablePlanned/Output.xml", [ 'new_root','timetable'], root_is_rows=False)
+df = pdx.read_xml("preprocessedData/timetablePlanned/Output.xml", ['new_root','timetable'], root_is_rows=False)
 df = pdx.fully_flatten(df)
 print('Base dataframe for planned timetables constructed')
-
+#Dealing with non existant columns to ensure that they exist.
+cols_to_check = ['@station', 's|@id', 's|ar|@l', 's|ar|@pp', 's|ar|@ppth', 's|ar|@ps', 's|ar|@pt', 's|ar|@tra', 's|dp|@l', 's|dp|@pp', 's|dp|@ppth', 's|dp|@ps', 's|dp|@pt', 's|dp|@tra', 's|tl|@c', 's|tl|@n']
+unionList=list(set(df.columns).union(cols_to_check))
+df = df.reindex(columns=sorted(unionList)).fillna('').replace([''], [None])
 
 #Renaming the automatically generated columns that represent file path to make them nice to read and sanity check.
 df.rename(columns={'@station' : 'station',
@@ -110,7 +117,7 @@ print('Great deeds have been done on this fine day. The data is ready for furthe
 
 
 #df.to_excel('plannedBaseFrame.xlsx',index=False)
-DFPlannedArrivals.to_excel('plannedArrivals.xlsx',index=False)
-DFPlannedDepartures.to_excel('plannedDepartures.xlsx', index=False)
+#DFPlannedArrivals.to_excel('plannedArrivals.xlsx',index=False)
+#DFPlannedDepartures.to_excel('plannedDepartures.xlsx', index=False)
 #DFTrainInformation.to_excel('plannedTrainInformation.xlsx',index=False)
 #DFPlannedTrainsMapping.to_excel('plannedTrainMapping.xlsx',index=False)

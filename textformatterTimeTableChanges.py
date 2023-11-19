@@ -3,6 +3,7 @@ import lxml.etree
 import pandas_read_xml as pdx
 import os
 import xml.etree.ElementTree as ET
+import numpy as np
 pd.set_option('display.max_columns', 30)
 pd.set_option('display.max_rows', 12)
 
@@ -36,20 +37,31 @@ pd.set_option('display.max_rows', 12)
 #This is bad but its the easiest way to deal with the various xml files. 
 data1 = ET.tostring(ET.parse('rawdata/timetableChanges/8000028.xml').getroot()).decode("utf-8")
 data2 = ET.tostring(ET.parse('rawdata/timetableChanges/8000105.xml').getroot()).decode("utf-8")
+data3 = ET.tostring(ET.parse('rawdata/timetableChanges/8002549.xml').getroot()).decode("utf-8")
+data4 = ET.tostring(ET.parse('rawdata/timetableChanges/8011160.xml').getroot()).decode("utf-8")
 f = open("preprocessedData/timetableChanges/Output.xml", "a+")
 #This is here so that element tree parser doesnt complain about junk, gotta have proper xml structure sadly
 f.write("<new_root>")
 f.write(data1)
 f.write(data2)
+f.write(data3)
+f.write(data4)
 f.write("</new_root>")
 f.close()
 print('XMLs unioned, starting dataframe construction')
+
 
 #The unioned XML is completely flattened by this godsend of a package. Arriving at these two lines took 20hours.
 #There is a reason why this bloody file used to be called textformatter9.py in past commits......
 df = pdx.read_xml("preprocessedData/timetableChanges/Output.xml", [ 'new_root','timetable'], root_is_rows=False)
 df = pdx.fully_flatten(df)
-print('Base dataframe constructed')   
+print('Base dataframe constructed') 
+#df.to_excel('output3.xlsx', index=False)
+#Dealing with non existant columns to ensure that they exist.
+cols_to_check = ['s|@eva', 's|@id', 's|ar|@clt', 's|ar|@cp', 's|ar|@cs', 's|ar|@cpth', 's|ar|@ct', 's|ar|@dc', 's|ar|@l', 's|ar|@pp', 's|ar|@ppth', 's|ar|@ps', 's|ar|@pt', 's|ar|@tra', 's|dp|@clt', 's|dp|@cp', 's|dp|@cpth', 's|dp|@cs', 's|dp|@ct', 's|dp|@l', 's|dp|@pp', 's|dp|@ppth', 's|dp|@ps', 's|dp|@pt', 's|dp|@tra']
+unionList=list(set(df.columns).union(cols_to_check))
+df = df.reindex(columns=sorted(unionList)).fillna('').replace([''], [None])
+#Non existant value are None, important later on for sql too. 
 #Renaming the automatically generated columns that represent file path to make them nice to read and sanity check.
 df.rename(columns={'@station' : 'station',
                    's|@eva':'EVANumberTrainTrip', 
@@ -59,7 +71,7 @@ df.rename(columns={'@station' : 'station',
                    's|ar|@cs':'arrivalCancellationStatus',
                    's|ar|@cpth':'arrivalChangePath', 
                    's|ar|@ct':'arrivalChangeTime',
-                   's|ar|@dc':'arrivalDistantChange', #Tf does this mean?
+                   's|ar|@dc':'arrivalDistantChange', #Tf does this mean? Seems to be very rare. Taking it out for now.
                    's|ar|@l':'arrivalChangesLine',
                    's|ar|@pp':'arrivalChangesPlannedPlatform',
                    's|ar|@ppth':'arrivalChangesPlannedPath',
@@ -79,13 +91,15 @@ df.rename(columns={'@station' : 'station',
                    's|dp|@tra':'departureChangesTransition',          
                    },inplace=True)
 print('Base dataframe formatted')
-
+#df.to_excel('output4.xlsx', index=False)
+#print(df)
+#df.to_csv('moin.csv', index=False)
 #Splitting the base dataframe up into several parts for being inserted into a relational database later on.
 #Might as well do it here and not tax the database with continuous junk later on. Also saves massively on local storage doing it this way.
 #To put things into perspective, the base dataframe saved into excel for just Frankfurt and Bayreuth was 12k rows. This is 3k.
 
 
-DFChangedArrivals=df[['EVANumberTrainTrip','uniqueTrainTripId','arrivalCancellationStatus','arrivalCancellationTime','arrivalChangesPlannedStatus','arrivalDistantChange','arrivalChangePlatform','arrivalChangeTime','arrivalChangesLine','arrivalChangesPlannedPlatform','arrivalChangesPlannedTime','arrivalChangesTransition']]
+DFChangedArrivals=df[['EVANumberTrainTrip','uniqueTrainTripId','arrivalCancellationStatus','arrivalCancellationTime','arrivalChangesPlannedStatus','arrivalChangePlatform','arrivalChangeTime','arrivalChangesLine','arrivalChangesPlannedPlatform','arrivalChangesPlannedTime','arrivalChangesTransition']]
 DFChangedArrivals=DFChangedArrivals.drop_duplicates()
 DFChangedArrivals['uniqueId']=DFChangedArrivals['EVANumberTrainTrip'].astype(str) + DFChangedArrivals['uniqueTrainTripId'].astype(str) 
 print('Arrival changes dataframe extracted')
@@ -98,10 +112,9 @@ print('Departure changes dataframe extracted')
 DFChangedDataMapping=df[['EVANumberTrainTrip','uniqueTrainTripId']]
 DFChangedDataMapping=DFChangedDataMapping.drop_duplicates()
 print('Change data Station-TripId mapping extracted')
-
+#print(df)
 #These are only here if you want to observe what output data might look like. Mostly for sanity checking.
-df.to_excel('output4.xlsx', index=False)
-DFChangedArrivals.to_excel('arrivalData.xlsx', index=False)
-DFChangedDepartures.to_excel('departureData.xlsx', index=False)
+#DFChangedArrivals.to_excel('arrivalData.xlsx', index=False)
+#DFChangedDepartures.to_excel('departureData.xlsx', index=False)
 #DFChangedDataMapping.to_excel('changedDataMapping.xlsx', index=False)
-print(DFChangedArrivals	)
+

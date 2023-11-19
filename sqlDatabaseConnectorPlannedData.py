@@ -102,6 +102,6 @@ sql_insert = '''
 '''
 cursor.executemany(sql_insert, records)
 print("Planned train information insertion executed")
-
-
 cnxn.commit()
+#deleting Output file contents to prepare it for next run
+open('preprocessedData/timetablePlanned/Output.xml', 'w').close()
