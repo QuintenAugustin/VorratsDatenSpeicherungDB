@@ -1,7 +1,7 @@
 import http.client
 import constants
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import stationList as l
 from time import sleep
 
@@ -18,13 +18,21 @@ for i in l.relevantStations:
         'DB-Api-Key': constants.API_KEY,
         'accept': "application/xml"
         }
-    #Fetches date and time for proper file naming.
-    current_datetime = datetime.now().strftime("%y%m%d")
+
     
     #Jank af but works. Gets current time in seconds, then, adding another hour on top and then converting to proper hours.
     currentHour = time.time()
     futureHour = currentHour + 60*60
     futureHour = time.strftime("%H", time.localtime(futureHour))
+    #Fetches date and time for proper file naming.
+    current_datetime = datetime.now().strftime("%y%m%d")
+    #Not having this originally cost me a couple of hours. DB is very agressive when it comes to deleting.
+    if futureHour == "00": 
+        today = datetime.now()
+        delta = timedelta(days=1)
+        tomorrow = today + delta
+        current_datetime = tomorrow.strftime("%y%m%d")
+
 
 
     conn.request(f"GET", f"/db-api-marketplace/apis/timetables/v1/plan/{station}/{current_datetime}/{futureHour}", headers=headers)
