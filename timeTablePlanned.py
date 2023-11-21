@@ -1,6 +1,7 @@
 import http.client
 import constants
-from datetime import datetime
+import time
+from datetime import datetime, timedelta
 import stationList as l
 from time import sleep
 
@@ -11,28 +12,37 @@ for i in l.relevantStations:
     #Delay to ensure all api calls are accepted
     sleep(0.2)
 
-conn = http.client.HTTPSConnection("apis.deutschebahn.com")
+    conn = http.client.HTTPSConnection("apis.deutschebahn.com")
+    headers = {
+        'DB-Client-Id':  constants.API_CLIENT_ID,
+        'DB-Api-Key': constants.API_KEY,
+        'accept': "application/xml"
+        }
 
-headers = {
-    'DB-Client-Id':  constants.API_CLIENT_ID,
-    'DB-Api-Key': constants.API_KEY,
-    'accept': "application/xml"
-    }
+    
+    #Jank af but works. Gets current time in seconds, then, adding another hour on top and then converting to proper hours.
+    currentHour = time.time()
+    futureHour = currentHour + 60*60
+    futureHour = time.strftime("%H", time.localtime(futureHour))
+    #Fetches date and time for proper file naming.
+    current_datetime = datetime.now().strftime("%y%m%d")
+    #Not having this originally cost me a couple of hours. DB is very agressive when it comes to deleting.
+    if futureHour == "00": 
+        today = datetime.now()
+        delta = timedelta(days=1)
+        tomorrow = today + delta
+        current_datetime = tomorrow.strftime("%y%m%d")
 
-conn.request(f"GET", f"/db-api-marketplace/apis/timetables/v1/plan/{station}/231030/20", headers=headers)
 
-res = conn.getresponse()
-data = res.read()
 
-#Fetches date and time for proper file naming.
-current_datetime = datetime.now().strftime("%Y%m%d-%H%M%S")
+    conn.request(f"GET", f"/db-api-marketplace/apis/timetables/v1/plan/{station}/{current_datetime}/{futureHour}", headers=headers)
 
-#converts datetime object to string and defines Filepath
-str_current_datetime = str(current_datetime)
-file_name = str_current_datetime+".xml"
-timetableChangesFilePath = "rawdata/timetablePlanned/"+ file_name
+    res = conn.getresponse()
+    data = res.read()
+    #converts datetime object to string and defines Filepath
+    timetableChangesFilePath = f"rawdata/timetablePlanned/{station}.xml"
 
-#Writes timetable changes to file
-with open(timetableChangesFilePath, 'w', encoding="utf-8") as f:
-    f.write(data.decode("utf-8"))
-    f.close()
+    #Writes timetable changes to file
+    with open(timetableChangesFilePath, 'w', encoding="utf-8") as f:
+        f.write(data.decode("utf-8"))
+        f.close()

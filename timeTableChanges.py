@@ -12,8 +12,8 @@ for i in l.relevantStations:
     station = i
     #Delay to ensure all api calls are accepted
     sleep(0.2)
-    conn = http.client.HTTPSConnection("apis.deutschebahn.com")
 
+    conn = http.client.HTTPSConnection("apis.deutschebahn.com")
     #No looking at my keys. That'd be an amateur mistake
     headers = {
         'DB-Client-Id': constants.API_CLIENT_ID ,
@@ -23,7 +23,7 @@ for i in l.relevantStations:
 
     #fetches info for specific train station
     #turn this into a loop going forward iterating through an array of eva numbers Quinten. That'd be smart would it not? Done
-    conn.request(f"GET", f"/db-api-marketplace/apis/timetables/v1/rchg/{station}", headers=headers)
+    conn.request(f"GET", f"/db-api-marketplace/apis/timetables/v1/fchg/{station}", headers=headers)
 
 
     res = conn.getresponse()
@@ -34,10 +34,9 @@ for i in l.relevantStations:
 
     #Writes timetable changes to file
     with open(timetableChangesFilePath, 'w', encoding="utf-8") as f:
-
         f.write(data.decode("utf-8"))
         f.close()
-    print(data.decode("utf-8")) 
-    
+    print(f'Successfully obtained data for {station}') 
+print('You have assumed control over all information')    
 
 
