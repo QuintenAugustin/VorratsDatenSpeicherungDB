@@ -10,7 +10,7 @@ from time import sleep
 for i in l.relevantStations:
     station = i
     #Delay to ensure all api calls are accepted
-    sleep(0.2)
+    sleep(0.9)
 
     conn = http.client.HTTPSConnection("apis.deutschebahn.com")
     headers = {
