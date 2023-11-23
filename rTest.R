@@ -53,4 +53,38 @@ ggplot(rDataFrame |>
 Sys.Date()
 
 
-testDate <- as.Date(DateTime,rDataFrame$arrivalPlannedTime, "%yy-%mm-%dd %HH-%MM")
+#testDate <- as.Date(rDataFrame$arrivalPlannedTime, "%y%m%d%H%M")
+#?strptime()
+
+as.Date("2311190847", "%y%m%d%H%M")
+
+#testDateFrame <- as.data.frame(rDataFrame[,5])
+#testDataFrame2 <- na.omit(testDateFrame)
+
+newrDataFrame <-rDataFrame
+#You know, it took me 2.5 fucking hours to figure this blasted thing out. THE FACT THAT IT WORKED WITH MY TEST LISTS WAS DRIVING ME INSANE!
+newrDataFrame2 <- transform(newrDataFrame, arrivalPlannedTime=as.POSIXct(as.character(arrivalPlannedTime), format = '%y%m%d%H%M'))
+newrDataFrame2 <- transform(newrDataFrame2, arrivalChangeTime=as.POSIXct(as.character(arrivalChangeTime), format = '%y%m%d%H%M'))
+newrDataFrame2 <- transform(newrDataFrame2, departureChangeTime=as.POSIXct(as.character(departureChangeTime), format = '%y%m%d%H%M'))
+newrDataFrame2 <- transform(newrDataFrame2, departurePlannedTime=as.POSIXct(as.character(departurePlannedTime), format = '%y%m%d%H%M'))
+
+
+#This works, however if you want to appear a little more professional and fancy then do the next one bruh
+calcTest <- data.frame( newrDataFrame2$arrivalChangeTime - newrDataFrame2$arrivalPlannedTime)
+
+
+properCalcTest <- data.frame(difftime(newrDataFrame2$arrivalChangeTime, newrDataFrame2$arrivalPlannedTime, units="mins"))
+newrDataFrame2$arrivalDifftime <- difftime(newrDataFrame2$arrivalChangeTime, newrDataFrame2$arrivalPlannedTime)
+#This does not work because of course it doesn't. Will figure that out later. I love staying up long.
+ggplot(newrDataFrame2 |>
+         group_by(stationName) |>
+         summarise(moin = mean(arrivalDifftime)),
+       aes(stationName, moin)
+       )
+
+
+newrDataFrame2 |>
+  group_by(stationName) |>
+  summarise(moin = mean(arrivalDifftime)) -> result
+result
+
