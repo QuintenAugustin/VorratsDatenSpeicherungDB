@@ -74,7 +74,7 @@ calcTest <- data.frame( newrDataFrame2$arrivalChangeTime - newrDataFrame2$arriva
 
 
 properCalcTest <- data.frame(difftime(newrDataFrame2$arrivalChangeTime, newrDataFrame2$arrivalPlannedTime, units="mins"))
-newrDataFrame2$arrivalDifftime <- difftime(newrDataFrame2$arrivalChangeTime, newrDataFrame2$arrivalPlannedTime)
+newrDataFrame2$arrivalDifftime <- as.numeric(difftime(newrDataFrame2$arrivalChangeTime, newrDataFrame2$arrivalPlannedTime))
 #This does not work because of course it doesn't. Will figure that out later. I love staying up long.
 ggplot(newrDataFrame2 |>
          group_by(stationName) |>
@@ -87,4 +87,23 @@ newrDataFrame2 |>
   group_by(stationName) |>
   summarise(moin = mean(arrivalDifftime)) -> result
 result
+
+
+
+#Average arrival delay of every Train category
+ggplot(newrDataFrame2 |>
+    group_by(TrainCategory) |>
+    summarise(hmm = mean(arrivalDifftime,na.rm=TRUE)/60),
+    aes(x = reorder(TrainCategory, -hmm),y = hmm)
+    )+
+geom_bar(stat = 'identity')+
+geom_text(aes(label = after_stat(y)))
+
+
+blob <- rDataFrame
+blob$cancellation <- ifelse(is.na(blob$arrivalCancellationStatus), 0, 1)
+View(blob)
+aggregate(blob[26], list(blob$TrainCategory), mean)
+bla$cancellation <- ifelse(is.na(bla$arrivalCancellationStatus), 0, 100)
+helloR <-data.frame(aggregate(bla[26], list(bla$TrainCategory), mean))
 
