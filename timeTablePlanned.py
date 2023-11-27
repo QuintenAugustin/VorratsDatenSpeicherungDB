@@ -16,7 +16,7 @@ for i in l.relevantStations:
     station = i
     #Delay to ensure all api calls are accepted
     sleep(0.9)
-
+    #The actual connector is provided by DB, everything else is mine.
     conn = http.client.HTTPSConnection("apis.deutschebahn.com")
     headers = {
         'DB-Client-Id':  constants.API_CLIENT_ID,
