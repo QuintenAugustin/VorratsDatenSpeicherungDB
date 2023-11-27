@@ -7,31 +7,6 @@ pd.set_option('display.max_columns', 30)
 pd.set_option('display.max_rows', 1)
 
 
-#df_out = pd.read_xml(xml, parser="lxml")
-
-#print(df_out)
-
-#df_parsed = pd.read_xml(
-#    xml,
-#    xpath="//timetable/s/* ",
-#    parser="lxml",
-#)
-#df_address_stack = pd.read_xml(xml,xpath='//employee_name/email/id[contains(@name,"stack")]//address')
-#columns = ["id", "eva", "m", "ar", "test", "cp", "l"]
-#df_out = pd.DataFrame(
-#    data=df_parsed.values.reshape(-1, len(columns)),
-#    columns=columns,
-    
-#)
-#df_out = df_out.drop(columns=["m", "ar", "test"])
-
-##Fetches date and time for proper file naming.
-#    current_datetime = datetime.now().strftime("%Y%m%d-%H%M%S")
-#
-#    #converts datetime object to string and defines Filepath
-#    str_current_datetime = str(current_datetime)
-#    file_name = str_current_datetime+".xml"
-#    timetableChangesFilePath = "rawdata/timetableChanges/"+ file_name
 
 #This is bad but its the easiest way to deal with the various xml files. I should replace this with a loop like I did for the API connectors
 #But honestly this works and id rather not touch this now as its not that bad for few trains. Only gets relevant when you massively increase scope.
