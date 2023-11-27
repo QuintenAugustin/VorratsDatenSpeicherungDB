@@ -1,10 +1,12 @@
-#LETS FUCKING GO THANKS STACK OVERFLOW YOU GUYS ARE THE BEST WOOO
+
 
 
 import pyodbc
 import textformatterTimeTablePlanned as planned
 import pandas as pd
-
+#Connects to local sql server an pushes the data that was in the PlannedData dataframe into database.
+#The primary difficulty with all of this stems from the fact that we have a lot of overlapping data so we effectively need to update
+#duplicate rows to include the newer one and insert new rows for new entries. All of this while keeping the old entries.
 
 df = planned.DFPlannedTrainsMapping
 records = df.values.tolist()
@@ -16,21 +18,6 @@ database = 'test'
 cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';Trusted_Connection=yes;')
 cursor = cnxn.cursor()
 
-#Insert Data
-#sql_insert = '''
-#    declare @station varchar(50) = ?
-#    declare @uniqueTrainTripId varchar(150) = ?
-#    declare @uniqueId varchar(200) = ?
-#    UPDATE [PLannedTrainsMapping] 
-#    SET station = @station, uniqueTrainTripId = @uniqueTrainTripId
-#    WHERE uniqueId = @uniqueId
-
-#    IF @@ROWCOUNT = 0
-#        INSERT INTO [PlannedTrainsMapping] 
-#            (uniqueId, station, uniqueTrainTripId)
-#        VALUES (@uniqueId, @station, @uniqueTrainTripId)    
-#'''
-#cursor.executemany(sql_insert, records)
 
 df = planned.DFPlannedArrivals
 #Where the dataframe isnt null there is the dataframe, else there is a lack of data. This way this method doesn't complain about that.

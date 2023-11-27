@@ -1,8 +1,10 @@
-#LETS FUCKING GO THANKS STACK OVERFLOW YOU GUYS ARE THE BEST WOOO
+
 import pyodbc
 import textformatterTimeTableChanges as changes
 import pandas as pd
-
+#Connects to local sql server and pushes the data that was in the Changes dataframe into the database.
+#The primary difficulty with all of this stems from the fact that we have a lot of overlapping data so we effectively need to update
+#duplicate rows to include the newer one and insert new rows for new entries. All of this while keeping the old entries.
 
 
 # Connect to SQL Server
