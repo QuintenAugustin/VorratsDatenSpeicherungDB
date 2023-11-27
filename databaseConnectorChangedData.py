@@ -10,14 +10,15 @@ import pandas as pd
 # Connect to SQL Server
 server = '(localdb)\\localBahnminingDB' 
 database = 'test' 
-cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';Trusted_Connection=yes;')
-cursor = cnxn.cursor()
+connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';Trusted_Connection=yes;')
+cursor = connection.cursor()
 
 
 df = changes.DFChangedArrivals
 #Where the dataframe isnt null there is the dataframe, else there is a lack of data. This way this method doesn't complain about that.
 df = df.where(pd.notnull(df), None)
 records = df.values.tolist()
+#Pointed into the right direction by a mix of Stackoverflow and SQL Server guides. Plenty of  adaptations to make this work for me.
 sql_insert = '''
     declare @EVANumberTrainTrip int = ?
     declare @uniqueTrainTripId varchar(150) = ?
@@ -94,6 +95,6 @@ sql_insert = '''
 cursor.executemany(sql_insert, records)
 print("Changed departures insertion executed")
 
-cnxn.commit()
+connection.commit()
 #deleting Output file contents to prepare it for next run
 open('preprocessedData/timetableChanges/Output.xml', 'w').close()

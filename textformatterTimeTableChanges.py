@@ -7,7 +7,12 @@ pd.set_option('display.max_rows', 12)
 
 
 
-#This is bad but its the easiest way to deal with the various xml files. 
+#This is bad but its the easiest way to deal with the various xml files. I should replace this with a loop like I did for the API connectors
+#But honestly this works and id rather not touch this now as its not that bad for few trains. Only gets relevant when you massively increase scope.
+#Full disclaimer: This does not handle unexpected API returns well. That thus far only happened a single time due to API downtime.
+#This API downtime happened on the night of the 26th of November. Before then I had no way to handle it because I did not know what 
+#API downtime would look like. Answer: XML Document with downtime warnings. Had I known what the warnings look like i'd have handled this,
+#However it is way too close to deadline to hastily try implementing a catch for that and potentially destroying everything.
 data1 = ET.tostring(ET.parse('rawdata/timetableChanges/8000028.xml').getroot()).decode("utf-8")
 data2 = ET.tostring(ET.parse('rawdata/timetableChanges/8000105.xml').getroot()).decode("utf-8")
 data3 = ET.tostring(ET.parse('rawdata/timetableChanges/8002549.xml').getroot()).decode("utf-8")

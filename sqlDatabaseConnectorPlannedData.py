@@ -15,8 +15,8 @@ records = df.values.tolist()
 # Connect to SQL Server
 server = '(localdb)\\localBahnminingDB' 
 database = 'test' 
-cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';Trusted_Connection=yes;')
-cursor = cnxn.cursor()
+connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';Trusted_Connection=yes;')
+cursor = connection.cursor()
 
 
 df = planned.DFPlannedArrivals
@@ -89,6 +89,6 @@ sql_insert = '''
 '''
 cursor.executemany(sql_insert, records)
 print("Planned train information insertion executed")
-cnxn.commit()
+connection.commit()
 #deleting Output file contents to prepare it for next run
 open('preprocessedData/timetablePlanned/Output.xml', 'w').close()
