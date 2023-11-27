@@ -13,7 +13,6 @@ library(tidyverse)
 library(kableExtra)
 library(data.table)
 
-# Define UI for application that draws a histogram
 ui <- basicPage(
 
     # Application title
