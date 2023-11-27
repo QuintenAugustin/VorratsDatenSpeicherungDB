@@ -1,7 +1,7 @@
 import pandas as pd
-import lxml.etree
+
 import pandas_read_xml as pdx
-import os
+
 import xml.etree.ElementTree as ET
 pd.set_option('display.max_columns', 30)
 pd.set_option('display.max_rows', 1)
@@ -79,12 +79,11 @@ df.rename(columns={'@station' : 'station',
 print('Base dataframe formatted, commencing extraction') 
 #df.to_excel('plannedTimeTables2.xlsx', index=False)
 #print(df)
-#Not sure if splitting it up makes sense. We will have to find out.
+
 #Splitting the base dataframe up into several parts for being inserted into a relational database later on.
-#DFStations=df[['EvaNumber', 'station']]
+
 #dropping duplicates in second step because otherwise it puts other columns in too.
-#DFStations=DFStations.drop_duplicates()
-#print('Station dataframe extracted')
+
 
 DFPlannedArrivals=df[['station','uniqueTrainTripId','arrivalPlannedLine','arrivalPlannedPlatform','arrivalPlannedTime','arrivalPlannedTransition']]
 
@@ -115,7 +114,7 @@ DFPlannedTrainsMapping['uniqueId'] = DFPlannedTrainsMapping['station'].astype(st
 print('Train-Station mapping extracted')
 print('Great deeds have been done on this fine day. The data is ready for further assimilation. Even this horrible data quality bows before you. All hail pandas read xml.')
 
-
+#This commented out stuff is only there for troubleshooting in case it is needed.
 #df.to_excel('plannedBaseFrame.xlsx',index=False)
 #DFPlannedArrivals.to_excel('plannedArrivals.xlsx',index=False)
 #DFPlannedDepartures.to_excel('plannedDepartures.xlsx', index=False)

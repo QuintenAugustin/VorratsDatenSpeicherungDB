@@ -5,7 +5,12 @@ from datetime import datetime, timedelta
 import stationList as l
 from time import sleep
 
-#Does all the main API work. Easier this way because DB documents how to handle Python.S
+#Does all the main API work. Easier this way because DB documents how to handle Python.
+#The reason this is all so overbuilt is because the timetable planned and timetable changes information aren't persistently stored by
+#DeutscheBahn. Thus I can't just go ahead and download all the data for 2022 (then Id have been done with this project after a week.)
+#Instead they only keep the data for a few hours. Thus every 30inutes I request planned timetable information from DB and store them..... way down the track.
+#You will get there eventually.
+
 
 for i in l.relevantStations:
     station = i
