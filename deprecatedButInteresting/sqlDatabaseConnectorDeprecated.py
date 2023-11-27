@@ -1,4 +1,5 @@
 '''
+This does not work for me as it deletes prior entries. Very unfortunate, could have saved me several days.
 import pandas as pd
 import sqlalchemy as sa
 #import textformatter as changedData

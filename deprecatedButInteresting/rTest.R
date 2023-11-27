@@ -4,8 +4,10 @@
 library(lubridate)
 library(RODBC)
 library(tidyverse)
-
+#All of this is deprecated and was always only meant as loose tests for figuring out functionality. It was never meant to be very well organised.
+#However most of this works and I would have used this in other R files had I decided to go with R
 #Connecting to sql server via the odbc connector I have
+#This connection method I took from someone else.
 db_conn <- odbcConnect("RDatabaseConnector", rows_at_time = 1)
 
 if (db_conn == -1) {
@@ -55,7 +57,7 @@ Sys.Date()
 
 #testDate <- as.Date(rDataFrame$arrivalPlannedTime, "%y%m%d%H%M")
 #?strptime()
-
+#Sanity checking tests
 as.Date("2311190847", "%y%m%d%H%M")
 
 #testDateFrame <- as.data.frame(rDataFrame[,5])
@@ -75,7 +77,8 @@ calcTest <- data.frame( newrDataFrame2$arrivalChangeTime - newrDataFrame2$arriva
 
 properCalcTest <- data.frame(difftime(newrDataFrame2$arrivalChangeTime, newrDataFrame2$arrivalPlannedTime, units="mins"))
 newrDataFrame2$arrivalDifftime <- as.numeric(difftime(newrDataFrame2$arrivalChangeTime, newrDataFrame2$arrivalPlannedTime))
-#This does not work because of course it doesn't. Will figure that out later. I love staying up long.
+#This does not work because of course it doesn't. Will figure that out later. I love staying up long. <- It works now :) I had to turn difftime into numeric
+#That allows for cool math.
 ggplot(newrDataFrame2 |>
          group_by(stationName) |>
          summarise(moin = mean(arrivalDifftime)),

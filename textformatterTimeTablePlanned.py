@@ -86,10 +86,7 @@ print('Base dataframe formatted, commencing extraction')
 #print(df)
 
 #Splitting the base dataframe up into several parts for being inserted into a relational database later on.
-
-#dropping duplicates in second step because otherwise it puts other columns in too.
-
-
+#Future me: Yeah splitting this one up did not save any space due to the structure of the XML. What is done is done. TimeTableChanges saves space however.
 DFPlannedArrivals=df[['station','uniqueTrainTripId','arrivalPlannedLine','arrivalPlannedPlatform','arrivalPlannedTime','arrivalPlannedTransition']]
 
 #dropping duplicates in second step because otherwise it puts other columns in too.

@@ -21,6 +21,7 @@ ui <- basicPage(
 
      #      plotOutput("Plot")
 mainPanel(
+  #If you uncomment these they should work. This was all still testing phase, however 
   #plotOutput("plot"),
   #plotOutput("plot2"),
  # plotOutput("plot3")
@@ -45,6 +46,7 @@ server <- function(input, output, session) {
     print(resTest)
   })
 #  myData2 <- reactive ({
+  #This is where i decided to drop R. I could not get these after another to work in any way :( It was taking too much time to get it to work ultimately.
  #   myData2 <- myData()
    # myData2 <- transform(myData(), arrivalPlannedTime=as.POSIXct(as.character(arrivalPlannedTime), format = '%y%m%d%H%M'))
 #    myData2 <- transform(myData(), arrivalChangeTime=as.POSIXct(as.character(arrivalChangeTime), format = '%y%m%d%H%M'))
