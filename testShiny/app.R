@@ -21,9 +21,11 @@ ui <- basicPage(
 
      #      plotOutput("Plot")
 mainPanel(
-  plotOutput("plot"),
-  plotOutput("plot2")
- # tabsetPanel(tabPanel("Data", tableOutput("tbTable")))
+  #plotOutput("plot"),
+  #plotOutput("plot2"),
+ # plotOutput("plot3")
+  #tabsetPanel(tabPanel("Data", tableOutput("tbTable")))
+  tableOutput("tbTable2")
 )
 )
 
@@ -37,13 +39,34 @@ server <- function(input, output, session) {
       quit("no", 1)
     }
     sql <- "SELECT * FROM [test].[dbo].[ViewForR]"
-    resTest <- sqlQuery(db_conn, sql, stringsAsFactor = FALSE)
+    resTest <- data.frame(sqlQuery(db_conn, sql, stringsAsFactor = FALSE))
     #Closing database connection
     odbcClose(db_conn)
-    resTest
+    print(resTest)
   })
+#  myData2 <- reactive ({
+ #   myData2 <- myData()
+   # myData2 <- transform(myData(), arrivalPlannedTime=as.POSIXct(as.character(arrivalPlannedTime), format = '%y%m%d%H%M'))
+#    myData2 <- transform(myData(), arrivalChangeTime=as.POSIXct(as.character(arrivalChangeTime), format = '%y%m%d%H%M'))
+ #   myData2 <- transform(myData(), departureChangeTime=as.POSIXct(as.character(departureChangeTime), format = '%y%m%d%H%M'))
+  #  myData2 <- transform(myData(), departurePlannedTime=as.POSIXct(as.character(departurePlannedTime), format = '%y%m%d%H%M'))
+   # myData2$arrivalDifftime <- as.numeric(difftime(myData2$arrivalChangeTime, myData2$arrivalPlannedTime))
+ # })
+  #Time for the ultimate badness but i have no time to figure out a nice solution.
+  modifiedData1 <- reactive ({
+      transform(myData(), arrivalPlannedTime=as.POSIXct(as.character(arrivalPlannedTime), format = '%y%m%d%H%M'))
+    print(modifiedData1)
+      })
+
+  
+  
+  
   output$tbTable <-
     renderTable(myData())
+  
+  
+  output$tbTable2 <-
+    renderTable(modifiedData1())
   
   output$plot <- 
     renderPlot({
@@ -60,6 +83,23 @@ server <- function(input, output, session) {
            )+
     geom_bar(stat = 'identity')
     })
+  #output$plot3 <-
+   # renderPlot({
+   #   myData2 <- transform(myData(), arrivalPlannedTime=as.POSIXct(as.character(arrivalPlannedTime), format = '%y%m%d%H%M'))
+  #    myData2 <- transform(myData(), arrivalChangeTime=as.POSIXct(as.character(arrivalChangeTime), format = '%y%m%d%H%M'))
+  #    myData2 <- transform(myData(), departureChangeTime=as.POSIXct(as.character(departureChangeTime), format = '%y%m%d%H%M'))
+  #    myData2 <- transform(myData(), departurePlannedTime=as.POSIXct(as.character(departurePlannedTime), format = '%y%m%d%H%M'))
+   #   myData2$arrivalDifftime <- as.numeric(difftime(myData2$arrivalChangeTime, myData2$arrivalPlannedTime))
+    #  ggplot(myData2 |>
+    #           group_by(TrainCategory) |>
+    #           summarise(hmm = mean(arrivalDifftime,na.rm=TRUE)/60),
+     #        aes(x = reorder(TrainCategory, -hmm),y = hmm)
+    #  )+
+     #   geom_bar(stat = 'identity')+
+      #  geom_text(aes(label = after_stat(y)))
+      
+      
+    #})
   
   
 

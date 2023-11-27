@@ -104,6 +104,7 @@ blob <- rDataFrame
 blob$cancellation <- ifelse(is.na(blob$arrivalCancellationStatus), 0, 1)
 View(blob)
 aggregate(blob[26], list(blob$TrainCategory), mean)
+bla <- rDataFrame
 bla$cancellation <- ifelse(is.na(bla$arrivalCancellationStatus), 0, 100)
-helloR <-data.frame(aggregate(bla[26], list(bla$TrainCategory), mean))
+HelloR <-data.frame(aggregate(bla[26], list(bla$TrainCategory), mean))
 
