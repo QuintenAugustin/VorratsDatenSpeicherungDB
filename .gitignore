@@ -5,4 +5,6 @@ rawdata/timetablePlanned
 preprocessedData/
 test.csv
 test3.py
+test.txt
 
+.Rproj.user

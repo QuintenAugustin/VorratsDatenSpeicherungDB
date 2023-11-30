@@ -1,7 +1,8 @@
 #This file exists because I am stupid and too lazy to go figure out CSV imports into sql server lol
 #Also yes I could probably do my other sql stuffs with df.to_sql but the way I found works and is tested. 
 #Don't want to touch it unless I have excess time and suffer from severe boredom.
-
+#This file only needs to be used once to import the Station data into SQL server. That table does not need regular#
+#updates unless DB changes stuff again.
 
 import pandas as pd 
 import pyodbc

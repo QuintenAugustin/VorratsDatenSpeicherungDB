@@ -1,39 +1,19 @@
 import pandas as pd
-import lxml.etree
+
 import pandas_read_xml as pdx
-import os
+
 import xml.etree.ElementTree as ET
 pd.set_option('display.max_columns', 30)
 pd.set_option('display.max_rows', 1)
 
 
-#df_out = pd.read_xml(xml, parser="lxml")
 
-#print(df_out)
-
-#df_parsed = pd.read_xml(
-#    xml,
-#    xpath="//timetable/s/* ",
-#    parser="lxml",
-#)
-#df_address_stack = pd.read_xml(xml,xpath='//employee_name/email/id[contains(@name,"stack")]//address')
-#columns = ["id", "eva", "m", "ar", "test", "cp", "l"]
-#df_out = pd.DataFrame(
-#    data=df_parsed.values.reshape(-1, len(columns)),
-#    columns=columns,
-    
-#)
-#df_out = df_out.drop(columns=["m", "ar", "test"])
-
-##Fetches date and time for proper file naming.
-#    current_datetime = datetime.now().strftime("%Y%m%d-%H%M%S")
-#
-#    #converts datetime object to string and defines Filepath
-#    str_current_datetime = str(current_datetime)
-#    file_name = str_current_datetime+".xml"
-#    timetableChangesFilePath = "rawdata/timetableChanges/"+ file_name
-
-#This is bad but its the easiest way to deal with the various xml files. 
+#This is bad but its the easiest way to deal with the various xml files. I should replace this with a loop like I did for the API connectors
+#But honestly this works and id rather not touch this now as its not that bad for few trains. Only gets relevant when you massively increase scope.
+#Full disclaimer: This does not handle unexpected API returns well. That thus far only happened a single time due to API downtime.
+#This API downtime happened on the night of the 26th of November. Before then I had no way to handle it because I did not know what 
+#API downtime would look like. Answer: XML Document with downtime warnings. Had I known what the warnings look like i'd have handled this,
+#However it is way too close to deadline to hastily try implementing a catch for that and potentially destroying everything.
 data1 = ET.tostring(ET.parse('rawdata/timetablePlanned/8000028.xml').getroot()).decode("utf-8")
 data2 = ET.tostring(ET.parse('rawdata/timetablePlanned/8000105.xml').getroot()).decode("utf-8")
 data3 = ET.tostring(ET.parse('rawdata/timetablePlanned/8002549.xml').getroot()).decode("utf-8")
@@ -79,13 +59,9 @@ df.rename(columns={'@station' : 'station',
 print('Base dataframe formatted, commencing extraction') 
 #df.to_excel('plannedTimeTables2.xlsx', index=False)
 #print(df)
-#Not sure if splitting it up makes sense. We will have to find out.
-#Splitting the base dataframe up into several parts for being inserted into a relational database later on.
-#DFStations=df[['EvaNumber', 'station']]
-#dropping duplicates in second step because otherwise it puts other columns in too.
-#DFStations=DFStations.drop_duplicates()
-#print('Station dataframe extracted')
 
+#Splitting the base dataframe up into several parts for being inserted into a relational database later on.
+#Future me: Yeah splitting this one up did not save any space due to the structure of the XML. What is done is done. TimeTableChanges saves space however.
 DFPlannedArrivals=df[['station','uniqueTrainTripId','arrivalPlannedLine','arrivalPlannedPlatform','arrivalPlannedTime','arrivalPlannedTransition']]
 
 #dropping duplicates in second step because otherwise it puts other columns in too.
@@ -115,7 +91,7 @@ DFPlannedTrainsMapping['uniqueId'] = DFPlannedTrainsMapping['station'].astype(st
 print('Train-Station mapping extracted')
 print('Great deeds have been done on this fine day. The data is ready for further assimilation. Even this horrible data quality bows before you. All hail pandas read xml.')
 
-
+#This commented out stuff is only there for troubleshooting in case it is needed.
 #df.to_excel('plannedBaseFrame.xlsx',index=False)
 #DFPlannedArrivals.to_excel('plannedArrivals.xlsx',index=False)
 #DFPlannedDepartures.to_excel('plannedDepartures.xlsx', index=False)

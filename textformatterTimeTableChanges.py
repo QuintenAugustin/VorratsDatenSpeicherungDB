@@ -1,40 +1,19 @@
 import pandas as pd
-import lxml.etree
 import pandas_read_xml as pdx
-import os
 import xml.etree.ElementTree as ET
-import numpy as np
 pd.set_option('display.max_columns', 30)
 pd.set_option('display.max_rows', 12)
 
 
-#df_out = pd.read_xml(xml, parser="lxml")
 
-#print(df_out)
 
-#df_parsed = pd.read_xml(
-#    xml,
-#    xpath="//timetable/s/* ",
-#    parser="lxml",
-#)
-#df_address_stack = pd.read_xml(xml,xpath='//employee_name/email/id[contains(@name,"stack")]//address')
-#columns = ["id", "eva", "m", "ar", "test", "cp", "l"]
-#df_out = pd.DataFrame(
-#    data=df_parsed.values.reshape(-1, len(columns)),
-#    columns=columns,
-    
-#)
-#df_out = df_out.drop(columns=["m", "ar", "test"])
-
-##Fetches date and time for proper file naming.
-#    current_datetime = datetime.now().strftime("%Y%m%d-%H%M%S")
-#
-#    #converts datetime object to string and defines Filepath
-#    str_current_datetime = str(current_datetime)
-#    file_name = str_current_datetime+".xml"
-#    timetableChangesFilePath = "rawdata/timetableChanges/"+ file_name
-
-#This is bad but its the easiest way to deal with the various xml files. 
+#This is bad but its the easiest way to deal with the various xml files. I should replace this with a loop like I did for the API connectors
+#But honestly this works and id rather not touch this now as its not that bad for few trains. Only gets relevant when you massively increase scope.
+#Full disclaimer: This does not handle unexpected API returns well. That thus far only happened a single time due to API downtime.
+#This API downtime happened on the night of the 26th of November. Before then I had no way to handle it because I did not know what 
+#API downtime would look like. Answer: XML Document with downtime warnings. Had I known what the warnings look like i'd have handled this,
+#However it is way too close to deadline to hastily try implementing a catch for that and potentially destroying everything.
+#Another note: The reason I wanted to consolidate everything before pushing to the Server is that I assume that this would be less Server activity. Whether ultimately consolidating and then pushing once or pushing once for every station is better I dont know. I suspect that since this consolidation and fully  flattening grows exponentially this may be worse but I do not know.
 data1 = ET.tostring(ET.parse('rawdata/timetableChanges/8000028.xml').getroot()).decode("utf-8")
 data2 = ET.tostring(ET.parse('rawdata/timetableChanges/8000105.xml').getroot()).decode("utf-8")
 data3 = ET.tostring(ET.parse('rawdata/timetableChanges/8002549.xml').getroot()).decode("utf-8")
@@ -94,11 +73,10 @@ print('Base dataframe formatted')
 #df.to_excel('output4.xlsx', index=False)
 #print(df)
 #df.to_csv('moin.csv', index=False)
+
 #Splitting the base dataframe up into several parts for being inserted into a relational database later on.
 #Might as well do it here and not tax the database with continuous junk later on. Also saves massively on local storage doing it this way.
 #To put things into perspective, the base dataframe saved into excel for just Frankfurt and Bayreuth was 12k rows. This is 3k.
-
-
 DFChangedArrivals=df[['EVANumberTrainTrip','uniqueTrainTripId','arrivalCancellationStatus','arrivalCancellationTime','arrivalChangesPlannedStatus','arrivalChangePlatform','arrivalChangeTime','arrivalChangesLine','arrivalChangesPlannedPlatform','arrivalChangesPlannedTime','arrivalChangesTransition']]
 DFChangedArrivals=DFChangedArrivals.drop_duplicates()
 DFChangedArrivals['uniqueId']=DFChangedArrivals['EVANumberTrainTrip'].astype(str) + DFChangedArrivals['uniqueTrainTripId'].astype(str) 
@@ -112,8 +90,9 @@ print('Departure changes dataframe extracted')
 DFChangedDataMapping=df[['EVANumberTrainTrip','uniqueTrainTripId']]
 DFChangedDataMapping=DFChangedDataMapping.drop_duplicates()
 print('Change data Station-TripId mapping extracted')
-#print(df)
+
 #These are only here if you want to observe what output data might look like. Mostly for sanity checking.
+#print(df)
 #DFChangedArrivals.to_excel('arrivalData.xlsx', index=False)
 #DFChangedDepartures.to_excel('departureData.xlsx', index=False)
 #DFChangedDataMapping.to_excel('changedDataMapping.xlsx', index=False)
