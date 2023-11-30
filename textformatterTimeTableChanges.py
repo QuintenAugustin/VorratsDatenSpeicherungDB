@@ -13,6 +13,7 @@ pd.set_option('display.max_rows', 12)
 #This API downtime happened on the night of the 26th of November. Before then I had no way to handle it because I did not know what 
 #API downtime would look like. Answer: XML Document with downtime warnings. Had I known what the warnings look like i'd have handled this,
 #However it is way too close to deadline to hastily try implementing a catch for that and potentially destroying everything.
+#Another note: The reason I wanted to consolidate everything before pushing to the Server is that I assume that this would be less Server activity. Whether ultimately consolidating and then pushing once or pushing once for every station is better I dont know. I suspect that since this consolidation and fully  flattening grows exponentially this may be worse but I do not know.
 data1 = ET.tostring(ET.parse('rawdata/timetableChanges/8000028.xml').getroot()).decode("utf-8")
 data2 = ET.tostring(ET.parse('rawdata/timetableChanges/8000105.xml').getroot()).decode("utf-8")
 data3 = ET.tostring(ET.parse('rawdata/timetableChanges/8002549.xml').getroot()).decode("utf-8")
